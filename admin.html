@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Dashboard System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Menggunakan style yang sama dengan index.html */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f0f9ff;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1e293b;
+    overflow: hidden;
+    position: relative;
+}
+.glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 24px;
+    padding: 40px;
+    width: 90%;
+    max-width: 1100px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-top: 1px solid rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1), inset 0 0 30px rgba(255, 255, 255, 0.5);
+    position: relative;
+    z-index: 10;
+    animation: slideUp 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+.admin-header {
+    text-align: center;
+    margin-bottom: 10px;
+}
+.icon-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00eaff, #0096ff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    color: #000;
+    margin: 0 auto 20px;
+    box-shadow: 0 0 20px rgba(0, 234, 255, 0.4);
+}
+.title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: #0f172a;
+}
+.subtitle { color: #64748b; margin-bottom: 30px; font-weight: 400; }
+.cloud-status { font-size: 0.85rem; margin-top: -20px; margin-bottom: 30px; padding: 8px 16px; border-radius: 20px; background: #f1f5f9; display: inline-block; color: #64748b; border: 1px solid #e2e8f0; }
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    text-align: left;
+}
+
+/* Input Style */
+.input-group { margin-bottom: 25px; text-align: left; }
+.input-label { display: block; margin-bottom: 10px; font-weight: 600; color: #334155; font-size: 0.9rem; }
+input[type="text"] {
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #1e293b;
+    font-size: 1rem;
+    outline: none;
+    transition: 0.3s;
+}
+input[type="text"]:focus {
+    border-color: #0ea5e9;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+}
+select {
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #1e293b;
+    font-size: 1rem;
+    outline: none;
+    transition: 0.3s;
+    cursor: pointer;
+}
+textarea {
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #1e293b;
+    font-size: 1rem;
+    outline: none;
+    transition: 0.3s;
+    resize: vertical;
+    font-family: 'Inter', sans-serif;
+}
+textarea:focus {
+    border-color: #0ea5e9;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+}
+select option { background: #ffffff; color: #1e293b; }
+
+/* Buttons */
+.button-group { display: flex; flex-direction: row; gap: 20px; }
+.btn {
+    padding: 16px;
+    border-radius: 12px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex: 1;
+}
+.btn-save {
+    background: linear-gradient(135deg, #00eaff, #0096ff);
+    color: #000;
+    box-shadow: 0 8px 20px rgba(0, 234, 255, 0.3);
+}
+.btn-save:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(0, 234, 255, 0.4); }
+.btn-back {
+    background: #e2e8f0;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+}
+.btn-back:hover { background: #cbd5e1; color: #1e293b; }
+.btn-upload {
+    background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+    color: white;
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+}
+.btn-upload:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(139, 92, 246, 0.4); }
+
+/* Table Style */
+.table-container {
+    border-radius: 12px;
+    overflow-x: auto;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    height: fit-content;
+}
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 600px; }
+th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid #f1f5f9; white-space: nowrap; }
+th { background: #f8fafc; color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; }
+td { color: #334155; transition: background 0.2s; }
+tr:hover td { background: #f0f9ff; }
+tr:last-child td { border-bottom: none; }
+.status-dot {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px;
+}
+.status-active { background-color: #27c93f; box-shadow: 0 0 8px rgba(39, 201, 63, 0.4); }
+.status-empty { background-color: #ff5f56; box-shadow: 0 0 8px rgba(255, 95, 86, 0.4); }
+
+@keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+/* --- BACKGROUND ANIMATION --- */
+.bg-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.6;
+    animation: float 10s infinite ease-in-out alternate;
+}
+
+.blob-1 {
+    top: -10%;
+    left: -10%;
+    width: 500px;
+    height: 500px;
+    background: #a855f7;
+    animation-delay: 0s;
+}
+
+.blob-2 {
+    bottom: -10%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: #3b82f6;
+    animation-delay: -5s;
+}
+
+@keyframes float {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(30px, 50px) scale(1.1); }
+}
+
+/* Grid Pattern */
+.bg-grid {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: 
+        linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 1;
+    pointer-events: none;
+    mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+}
+
+@media (max-width: 768px) {
+    .button-group { flex-direction: column; }
+    .glass-card { padding: 30px; }
+    .content-grid { grid-template-columns: 1fr; gap: 30px; }
+}
+</style>
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+    <div class="bg-grid"></div>
+
+    <div class="glass-card">
+        <div class="admin-header">
+            <div class="icon-circle">
+                <i class="fas fa-user-astronaut"></i>
+            </div>
+            <h1 class="title">Admin Dashboard</h1>
+            <p class="subtitle">Kelola Link Spreadsheet System</p>
+            <div id="cloudStatus" class="cloud-status">
+                <i class="fas fa-cloud"></i> Status Cloud: <span id="statusText">Memeriksa...</span>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <!-- Kolom Kiri: Form -->
+            <div class="form-section">
+                <div class="input-group">
+                    <label class="input-label">Pilih Bagian:</label>
+                    <select id="sectionSelect" onchange="loadSavedUrl()">
+                        <option value="RPD">RPD</option>
+                        <option value="LRA">LRA</option>
+                        <option value="PBJ">PBJ</option>
+                        <option value="E-PERWABKU">E-PERWABKU</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Masukkan Link URL:</label>
+                    <input type="text" id="urlInput" placeholder="Tempel link Google Sheets di sini...">
+                </div>
+
+                <div class="input-group" id="sidebarInputGroup" style="display:none;">
+                    <label class="input-label">Data Sidebar PBJ (Format: Tanggal | Judul):</label>
+                    <textarea id="sidebarInput" rows="6" placeholder="24 Jan 2026 | Pengadaan Laptop&#10;22 Jan 2026 | Renovasi Gedung"></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-save" onclick="simpanUrl()">
+                        <i class="fas fa-save"></i> Simpan Perubahan
+                    </button>
+                    <button class="btn btn-upload" id="btnForceUpload" onclick="forceUploadToCloud()">
+                        <i class="fas fa-cloud-upload-alt"></i> Upload ke Cloud
+                    </button>
+                    <button class="btn btn-back" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Kolom Kanan: Tabel -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Bagian</th><th>Status</th><th>Link Preview</th></tr>
+                    </thead>
+                    <tbody id="linksTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // KONFIGURASI CLOUD (Agar data bisa dilihat semua user)
+        // 1. Buka https://jsonbin.io, daftar/login.
+        // 2. Buat Bin baru (JSON kosong {}), copy Bin ID.
+        // 3. Copy API Key (X-Master-Key) dari menu API Keys.
+        const CLOUD_CONFIG = {
+            BIN_ID: '694a413003998b11ea8dad88', // Bin ID Anda
+            API_KEY: '$2a$10$h08CHo/2k.EXdddjlF1Jj.wgLWCrn5ygHtQqUzOj7fZxG5RFYTYl6' // API Key Anda
+        };
+
+        // Saat halaman dimuat, ambil URL yang sudah tersimpan (jika ada)
+        window.onload = async function() {
+            // Cek apakah user sudah login dari index.html
+            if (!sessionStorage.getItem('isAdmin')) {
+                alert("Akses Ditolak! Silakan login dari halaman utama.");
+                window.location.href = 'index.html';
+                return;
+            }
+
+            updateCloudStatusUI();
+            await syncFromCloud(); // Ambil data terbaru dari cloud saat admin login
+            loadSavedUrl();
+            updateTable();
+        }
+
+        function updateCloudStatusUI() {
+            const statusText = document.getElementById('statusText');
+            const statusDiv = document.getElementById('cloudStatus');
+            
+            if (CLOUD_CONFIG.BIN_ID && CLOUD_CONFIG.API_KEY) {
+                statusText.innerHTML = '<span style="color: #10b981; font-weight: 600;">Terhubung (Aktif)</span>';
+                statusDiv.style.background = '#ecfdf5';
+                statusDiv.style.border = '1px solid #a7f3d0';
+            } else {
+                statusText.innerHTML = '<span style="color: #ef4444; font-weight: 600;">Belum Dikonfigurasi</span>';
+                statusDiv.style.background = '#fef2f2';
+                statusDiv.style.border = '1px solid #fecaca';
+                statusDiv.title = "Isi BIN_ID dan API_KEY di dalam kode program agar link bisa dilihat user lain.";
+            }
+        }
+
+        function loadSavedUrl() {
+            const section = document.getElementById('sectionSelect').value;
+            let savedUrl = localStorage.getItem(section + '_Url');
+            if (savedUrl === 'null' || savedUrl === 'undefined') savedUrl = ''; // Bersihkan nilai null string
+            document.getElementById('urlInput').value = savedUrl || '';
+
+            // Logika khusus untuk input Sidebar PBJ
+            const sidebarGroup = document.getElementById('sidebarInputGroup');
+            if (section === 'PBJ') {
+                sidebarGroup.style.display = 'block';
+                let sidebarData = localStorage.getItem('PBJ_Sidebar_Data');
+                if (sidebarData === 'null' || sidebarData === 'undefined') sidebarData = '';
+                document.getElementById('sidebarInput').value = sidebarData || '';
+            } else {
+                sidebarGroup.style.display = 'none';
+            }
+        }
+
+        async function simpanUrl() {
+            const section = document.getElementById('sectionSelect').value;
+            const url = document.getElementById('urlInput').value;
+            
+            if (!url) {
+                alert("Mohon masukkan URL terlebih dahulu!");
+                return;
+            }
+
+            // Simpan ke LocalStorage browser
+            localStorage.setItem(section + '_Url', url);
+            
+            // Simpan data sidebar jika sedang di menu PBJ
+            if (section === 'PBJ') {
+                const sidebarData = document.getElementById('sidebarInput').value;
+                localStorage.setItem('PBJ_Sidebar_Data', sidebarData);
+            }
+
+            // SIMPAN KE CLOUD (Agar user lain bisa melihat)
+            await saveToCloud();
+
+            alert("URL untuk " + section + " berhasil disimpan!");
+            updateTable();
+        }
+
+        async function forceUploadToCloud() {
+            const btn = document.getElementById('btnForceUpload');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengupload...';
+            btn.disabled = true;
+
+            await saveToCloud();
+            
+            btn.innerHTML = '<i class="fas fa-check"></i> Berhasil!';
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                alert("Data berhasil diupload ke Cloud! Sekarang user lain bisa melihatnya.");
+            }, 500);
+        }
+
+        // Fungsi untuk mengambil data dari Cloud (JsonBin)
+        async function syncFromCloud() {
+            if (!CLOUD_CONFIG.BIN_ID || !CLOUD_CONFIG.API_KEY) return;
+            try {
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${CLOUD_CONFIG.BIN_ID}/latest`, {
+                    headers: { 'X-Master-Key': CLOUD_CONFIG.API_KEY }
+                });
+                if (res.ok) {
+                    const json = await res.json();
+                    const data = json.record;
+                    if (data && typeof data === 'object') {
+                        // Simpan ke localStorage agar sinkron
+                        Object.keys(data).forEach(key => {
+                            // Pastikan tidak menyimpan null/undefined sebagai string
+                            const val = data[key];
+                            if (val !== null && val !== undefined) {
+                                localStorage.setItem(key, val);
+                            }
+                        });
+                    }
+                }
+            } catch (e) { console.error("Gagal sync cloud:", e); }
+        }
+
+        // Fungsi untuk menyimpan data ke Cloud (JsonBin)
+        async function saveToCloud() {
+            if (!CLOUD_CONFIG.BIN_ID || !CLOUD_CONFIG.API_KEY) {
+                // Alert sudah muncul di onload, tidak perlu spam alert di sini, cukup log
+                console.warn("Fitur Cloud belum dikonfigurasi. Data hanya tersimpan lokal.");
+                return;
+            }
+            
+            const data = {
+                'RPD_Url': localStorage.getItem('RPD_Url') || '',
+                'LRA_Url': localStorage.getItem('LRA_Url') || '',
+                'PBJ_Url': localStorage.getItem('PBJ_Url') || '',
+                'E-PERWABKU_Url': localStorage.getItem('E-PERWABKU_Url') || '',
+                'PBJ_Sidebar_Data': localStorage.getItem('PBJ_Sidebar_Data') || ''
+            };
+            
+            try {
+                await fetch(`https://api.jsonbin.io/v3/b/${CLOUD_CONFIG.BIN_ID}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'X-Master-Key': CLOUD_CONFIG.API_KEY },
+                    body: JSON.stringify(data)
+                });
+            } catch (e) { console.error("Gagal save cloud:", e); alert("Gagal menyimpan ke Cloud. Cek koneksi internet."); }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('isAdmin'); // Hapus sesi login
+            window.location.href = 'index.html';
+        }
+
+        function updateTable() {
+            const sections = ['RPD', 'LRA', 'PBJ', 'E-PERWABKU'];
+            const tbody = document.getElementById('linksTableBody');
+            tbody.innerHTML = '';
+
+            sections.forEach(sec => {
+                let url = localStorage.getItem(sec + '_Url');
+                if (url === 'null' || url === 'undefined') url = '';
+                
+                const hasUrl = url && url.trim() !== '';
+                const statusDot = hasUrl ? '<span class="status-dot status-active"></span>' : '<span class="status-dot status-empty"></span>';
+                const statusText = hasUrl ? 'Aktif' : 'Kosong';
+                const shortUrl = hasUrl ? (url.length > 25 ? url.substring(0, 25) + '...' : url) : '-';
+                
+                const row = `<tr>
+                    <td>${sec}</td>
+                    <td>${statusDot} ${statusText}</td>
+                    <td style="font-family: monospace;">${shortUrl}</td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+    </script>
+</body>
+</html>

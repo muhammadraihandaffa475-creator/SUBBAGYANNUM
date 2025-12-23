@@ -1,0 +1,2101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User View - Dashboard System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+/* Style Global */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f0f9ff;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: #1e293b;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Header Navigasi */
+.navbar {
+    position: relative;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    height: 80px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    margin: 20px 30px 0;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.nav-logo {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.5);
+    object-fit: cover;
+}
+.nav-title {
+    font-weight: 800;
+    font-size: 1.4rem;
+    letter-spacing: -0.5px;
+    background: linear-gradient(45deg, #00eaff, #d989ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.btn-back {
+    background: rgba(255, 255, 255, 0.5);
+    color: #475569;
+    border: 1px solid rgba(203, 213, 225, 0.5);
+    padding: 10px 24px;
+    border-radius: 12px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.btn-back:hover {
+    background: rgba(255, 255, 255, 0.8);
+    color: #1e293b;
+    transform: translateX(-3px);
+}
+
+.tabs {
+    background: rgba(255, 255, 255, 0.6);
+    padding: 8px;
+    border-radius: 50px;
+    display: flex;
+    gap: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    padding: 10px 24px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 0.95rem;
+    position: relative;
+    overflow: hidden;
+}
+.tab-btn:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.5);
+}
+.tab-btn.active {
+    background: linear-gradient(135deg, #00eaff, #0096ff);
+    color: #000; /* Black text on bright button */
+    box-shadow: 0 4px 15px rgba(0, 234, 255, 0.3);
+}
+
+/* Area Konten Utama */
+.main-content {
+    flex: 1;
+    position: relative;
+    z-index: 10;
+    padding: 20px 30px 30px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.glass-panel {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    position: relative;
+    animation: fadeIn 0.8s ease-out;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-header {
+    height: 48px;
+    background: rgba(241, 245, 249, 0.5);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 10px;
+    position: relative;
+}
+
+.header-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 10px;
+}
+
+.sidebar-search {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 12px;
+    padding: 0 15px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(203, 213, 225, 0.6);
+}
+.sidebar-search i { color: #64748b; font-size: 0.9rem; }
+.sidebar-search input {
+    background: transparent;
+    border: none;
+    color: #1e293b;
+    padding: 12px 10px;
+    outline: none;
+    font-size: 0.9rem;
+    width: 100%;
+}
+.btn-icon {
+    background: rgba(255, 255, 255, 0.5);
+    border: none;
+    color: #64748b;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-icon:hover { background: rgba(255, 255, 255, 0.8); color: #0ea5e9; }
+
+.window-controls { display: flex; gap: 8px; }
+.dot { width: 12px; height: 12px; border-radius: 50%; }
+.red { background: #ff5f56; box-shadow: 0 0 10px rgba(255, 95, 86, 0.4); }
+.yellow { background: #ffbd2e; box-shadow: 0 0 10px rgba(255, 189, 46, 0.4); }
+.green { background: #27c93f; box-shadow: 0 0 10px rgba(39, 201, 63, 0.4); }
+
+.loading-line {
+    position: absolute;
+    bottom: 0; left: 0;
+    height: 2px;
+    width: 0%;
+    background: linear-gradient(90deg, #00eaff, #d989ff);
+    transition: width 0.5s ease, opacity 0.3s ease;
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    flex: 1;
+    background: transparent;
+}
+
+.iframe-dark {
+    filter: invert(0.92) hue-rotate(180deg) contrast(0.9);
+}
+
+/* Sidebar PBJ */
+.pbj-layout {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.pbj-sidebar {
+    width: 300px;
+    background: rgba(248, 250, 252, 0.5);
+    border-left: 1px solid rgba(226, 232, 240, 0.8);
+    padding: 20px;
+    overflow-y: auto;
+    display: none; /* Hidden by default */
+    flex-direction: column;
+}
+.pbj-sidebar h3 {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    color: #0ea5e9;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.data-list { list-style: none; }
+.data-item { background: rgba(255, 255, 255, 0.6); padding: 12px; border-radius: 10px; margin-bottom: 10px; border: 1px solid rgba(226, 232, 240, 0.8); transition: 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+.data-item:hover { background: #f0f9ff; transform: translateX(5px); }
+.data-date { font-size: 0.75rem; color: #64748b; display: block; margin-bottom: 4px; }
+.data-title { font-size: 0.9rem; font-weight: 500; color: #1e293b; }
+
+.grouping-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(226, 232, 240, 0.8); font-size: 0.9rem; }
+.grouping-name { color: #475569; }
+.grouping-count { font-weight: bold; color: #0ea5e9; background: rgba(14, 165, 233, 0.1); padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; }
+
+/* Chart Container */
+.chart-container { position: relative; height: 100%; width: 100%; }
+
+/* Native Table Styles (PBJ) */
+.native-table-wrapper {
+    width: 100%;
+    height: 100%;
+    overflow-x: auto; /* Paksa scroll horizontal aktif */
+    overflow-y: auto;
+    padding: 0;
+}
+.native-table {
+    width: max-content; /* Tabel akan melebar sesuai isi konten, tidak dipaksa 100% */
+    min-width: 100%;    /* Minimal selebar layar jika datanya sedikit */
+    border-collapse: collapse;
+    color: white;
+    font-size: 0.9rem;
+}
+.native-table th {
+    background: #fef9c3;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    color: #854d0e;
+    z-index: 5;
+    border: 1px solid #ca8a04;
+    white-space: normal;
+    vertical-align: middle;
+    text-align: center;
+    min-width: 80px;
+    position: relative;
+}
+.native-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(241, 245, 249, 0.8);
+    color: #334155;
+    white-space: nowrap;
+}
+.native-table th:first-child {
+    min-width: 300px;
+}
+.native-table tr:hover {
+    background: rgba(241, 245, 249, 0.5);
+}
+
+.pbj-content-row {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+}
+
+.pbj-stats-row {
+    display: none;
+    padding: 20px;
+    background: rgba(241, 245, 249, 0.5);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    height: 320px;
+    flex-shrink: 0;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #94a3b8;
+    text-align: center;
+}
+.empty-state i {
+    font-size: 5rem;
+    margin-bottom: 25px;
+    background: linear-gradient(135deg, #ffffff, #888888);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0.3;
+}
+.empty-state h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #1e293b;
+}
+.empty-state p {
+    font-size: 1rem;
+    max-width: 400px;
+    line-height: 1.6;
+    color: #64748b;
+}
+
+/* Background Animation */
+.bg-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.6;
+    animation: float 10s infinite ease-in-out alternate;
+}
+.blob-1 {
+    top: -10%;
+    left: -10%;
+    width: 500px;
+    height: 500px;
+    background: #a855f7;
+    animation-delay: 0s;
+    opacity: 0.4;
+}
+.blob-2 {
+    bottom: -10%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: #3b82f6;
+    animation-delay: -5s;
+    opacity: 0.4;
+}
+@keyframes float {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(30px, 50px) scale(1.1); }
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Grid Pattern */
+.bg-grid {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: 
+        linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 1;
+    pointer-events: none;
+    mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+}
+
+/* RPD Sub Navigation (Slide Toggle) */
+.rpd-sub-nav {
+    padding: 10px 20px;
+    background: rgba(255,255,255,0.5);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.rpd-sub-btn {
+    padding: 8px 16px;
+    border: 1px solid rgba(203, 213, 225, 0.8);
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #64748b;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.rpd-sub-btn:hover {
+    background: white;
+    color: #eab308;
+}
+.rpd-sub-btn.active {
+    background: linear-gradient(135deg, #facc15, #eab308);
+    color: #422006;
+    border: none;
+    box-shadow: 0 4px 10px rgba(234, 179, 8, 0.3);
+}
+
+/* RPD Dashboard Styles */
+.rpd-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    width: 100%;
+    margin-bottom: 30px;
+}
+.rpd-card {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+.rpd-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+.rpd-card-title {
+    color: #64748b;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+.rpd-card-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #ca8a04;
+    overflow-wrap: break-word;
+}
+.rpd-card-sub {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-top: 4px;
+}
+.rpd-charts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+    width: 100%;
+    margin-bottom: 30px;
+}
+.rpd-chart-card {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    height: 350px;
+    position: relative;
+}
+.rpd-chart-header {
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+@media (max-width: 768px) {
+    .rpd-charts-container {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+<body>
+
+    <div class="bg-animation">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+    <div class="bg-grid"></div>
+
+    <!-- Navigasi Atas -->
+    <div class="navbar">
+        <div class="nav-brand">
+            <img src="https://yt3.ggpht.com/a/AATXAJwDikBj_PcvGKe5caluqknHoXgqXk7I5vY1CqY9=s900-c-k-c0xffffffff-no-rj-mo" alt="Logo" class="nav-logo">
+            <div class="nav-title">Dashboard System</div>
+        </div>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('RPD')">RPD</button>
+            <button class="tab-btn" onclick="switchTab('LRA')">LRA</button>
+            <button class="tab-btn" onclick="switchTab('PBJ')">PBJ</button>
+            <button class="tab-btn" onclick="switchTab('E-PERWABKU')">E-PERWABKU</button>
+        </div>
+        <a href="index.html" class="btn-back"><i class="fas fa-home"></i> Kembali</a>
+    </div>
+
+    <!-- Area Tampilan Dashboard -->
+    <div class="main-content">
+        <div class="glass-panel" id="dashboardContainer">
+            <div class="panel-header">
+                <div class="window-controls">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-icon" onclick="toggleDarkMode()" title="Mode Gelap / Terang">
+                        <i class="fas fa-adjust"></i>
+                    </button>
+                    <button class="btn-icon" onclick="refreshIframe()" title="Refresh Data">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <div class="loading-line" id="loadingLine"></div>
+            </div>
+            <!-- Iframe akan muncul di sini -->
+            <div id="iframeWrapper" class="pbj-layout">
+                <!-- Top Stats Section (PBJ) -->
+                <div id="pbjStatsRow" class="pbj-stats-row">
+                    <div style="display: flex; gap: 30px; height: 100%;">
+                        <div style="flex: 1; display: flex; flex-direction: column; min-width: 0;">
+                            <h3 style="margin-bottom: 15px; color: #0ea5e9; font-size: 1.1rem;"><i class="fas fa-chart-pie"></i> Statistik Visual</h3>
+                            <div style="flex: 1; position: relative;">
+                                <canvas id="pbjChart"></canvas>
+                            </div>
+                        </div>
+                        <div style="flex: 1; display: flex; flex-direction: column; min-width: 0;">
+                            <h3 style="margin-bottom: 15px; color: #0ea5e9; font-size: 1.1rem;"><i class="fas fa-list-ol"></i> Rincian Statistik</h3>
+                            <div id="groupingList" style="flex: 1; overflow-y: auto; padding-right: 5px;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="pbj-content-row">
+                    <div id="iframeContainer" style="flex: 1; position: relative; height: 100%; overflow: hidden;">
+                        <div class="empty-state">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Memuat data...</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Sidebar 7 Data Terbaru (Khusus PBJ) -->
+                    <div class="pbj-sidebar" id="pbjSidebar">
+                        <h3><i class="fas fa-clock"></i> 7 Data Terbaru</h3>
+                        <div class="sidebar-search">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Cari di tabel..." onkeyup="filterTable(this.value)">
+                        </div>
+                        <div class="sidebar-search">
+                            <i class="fas fa-hashtag"></i>
+                            <input type="number" placeholder="Grafik per No. Urut..." oninput="updateChartByRow(this.value)">
+                        </div>
+                        <ul class="data-list" id="latestDataList">
+                            <!-- Data akan diisi oleh JS -->
+                        </ul>
+                        <div id="subsatkerContainer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSection = 'RPD';
+        window.smartTableData = []; // Menyimpan data mentah tabel (PBJ/E-PERWABKU)
+
+        // KONFIGURASI CLOUD (Harus sama persis dengan Admin)
+        const CLOUD_CONFIG = {
+            BIN_ID: '694a413003998b11ea8dad88', // Bin ID Anda
+            API_KEY: '$2a$10$h08CHo/2k.EXdddjlF1Jj.wgLWCrn5ygHtQqUzOj7fZxG5RFYTYl6' // API Key Anda
+        };
+
+        async function syncFromCloud() {
+            if (!CLOUD_CONFIG.BIN_ID || !CLOUD_CONFIG.API_KEY) return;
+            try {
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${CLOUD_CONFIG.BIN_ID}/latest`, {
+                    headers: { 'X-Master-Key': CLOUD_CONFIG.API_KEY }
+                });
+                if (res.ok) {
+                    const json = await res.json();
+                    const data = json.record;
+                    if (data && typeof data === 'object') {
+                        Object.keys(data).forEach(key => {
+                            // Pastikan tidak menyimpan null/undefined sebagai string
+                            const val = data[key];
+                            if (val !== null && val !== undefined) {
+                                localStorage.setItem(key, val);
+                            }
+                        });
+                    }
+                }
+            } catch (e) { console.error("Gagal sync cloud:", e); }
+        }
+
+        // Load tab pertama saat halaman dibuka
+        window.onload = async function() {
+            await syncFromCloud(); // Ambil data terbaru dari Admin sebelum menampilkan
+            switchTab('RPD');
+        }
+
+        function switchTab(section) {
+            currentSection = section;
+            
+            // Loading Animation
+            const loader = document.getElementById('loadingLine');
+            loader.style.width = '0%';
+            loader.style.opacity = '1';
+            setTimeout(() => { loader.style.width = '60%'; }, 50);
+            
+            // Update UI Tab
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText === section) btn.classList.add('active');
+            });
+
+            // Handle PBJ Specific UI
+            const pbjSidebar = document.getElementById('pbjSidebar');
+            const pbjStatsRow = document.getElementById('pbjStatsRow');
+            const dashboardContainer = document.getElementById('dashboardContainer');
+            
+            if (section === 'PBJ' || section === 'E-PERWABKU') {
+                pbjSidebar.style.display = 'flex';
+                pbjStatsRow.style.display = 'block';
+                
+                // Bersihkan tampilan lama saat berpindah tab
+                if (pbjChartInstance) { pbjChartInstance.destroy(); pbjChartInstance = null; }
+                document.getElementById('groupingList').innerHTML = '';
+                document.getElementById('latestDataList').innerHTML = '';
+                document.getElementById('subsatkerContainer').innerHTML = '';
+
+                // Coba load Smart View (Native Table)
+                const savedUrl = localStorage.getItem(section + '_Url');
+                if (savedUrl && savedUrl !== 'null' && savedUrl !== 'undefined') {
+                    loadSmartData(savedUrl, section);
+                } else {
+                    showEmptyState(section);
+                }
+                return; // Stop execution here for PBJ to avoid double loading iframe
+            } else {
+                pbjSidebar.style.display = 'none';
+                pbjStatsRow.style.display = 'none';
+            }
+
+            // Ambil URL dari LocalStorage
+            const savedUrl = localStorage.getItem(section + '_Url');
+            if (section === 'RPD') {
+                loadRPDView(savedUrl);
+            } else {
+                loadIframeView(savedUrl, section);
+            }
+        }
+
+        function loadIframeView(url, section) {
+            const container = document.getElementById('iframeContainer');
+            const loader = document.getElementById('loadingLine');
+
+            if (url && url !== 'null' && url !== 'undefined') {
+                // Format URL agar tampilan tabel Google Sheet lebih bersih (Preview Mode)
+                let cleanUrl = url;
+                if (cleanUrl.includes('docs.google.com/spreadsheets')) {
+                    // Ubah /edit menjadi /preview untuk tampilan tabel yang lebih rapi
+                    cleanUrl = cleanUrl.replace(/\/edit.*$/, '/preview');
+                }
+
+                // Jika ada URL, tampilkan iframe
+                container.innerHTML = `<iframe src="${cleanUrl}" allowfullscreen></iframe>`;
+                // Finish loading
+                setTimeout(() => { loader.style.width = '100%'; }, 300);
+                setTimeout(() => { loader.style.opacity = '0'; }, 800);
+            } else {
+                // Jika tidak ada URL, tampilkan pesan error
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <h2>Data ${section} Belum Tersedia</h2>
+                        <p>Admin belum mengatur link untuk bagian ini.</p>
+                    </div>
+                `;
+                loader.style.width = '100%';
+                setTimeout(() => { loader.style.opacity = '0'; }, 500);
+            }
+        }
+
+        function showEmptyState(section) {
+            const container = document.getElementById('iframeContainer');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <h2>Data ${section} Belum Tersedia</h2>
+                    <p>Admin belum mengatur link untuk bagian ini.</p>
+                </div>
+            `;
+        }
+
+        function toggleDarkMode() {
+            const iframe = document.querySelector('iframe');
+            if (iframe) iframe.classList.toggle('iframe-dark');
+        }
+
+        function refreshIframe() {
+            const iframe = document.querySelector('iframe');
+            if (iframe) iframe.src = iframe.src;
+        }
+
+        // --- LOGIKA RPD (Split View) ---
+        async function loadRPDView(url) {
+            const container = document.getElementById('iframeContainer');
+            const loader = document.getElementById('loadingLine');
+            
+            if (!url || url === 'null' || url === 'undefined') {
+                showEmptyState('RPD');
+                return;
+            }
+
+            // Format URL untuk Iframe
+            let cleanUrl = url;
+            if (cleanUrl.includes('docs.google.com/spreadsheets')) {
+                cleanUrl = cleanUrl.replace(/\/edit.*$/, '/preview');
+            }
+
+            // Layout: Sub-tabs (Slide) + Content Area
+            container.innerHTML = `
+                <div style="display: flex; flex-direction: column; height: 100%;">
+                    <div class="rpd-sub-nav">
+                        <button onclick="switchRPDSubTab('iframe')" id="btnRpdIframe" class="rpd-sub-btn active">
+                            <i class="fas fa-file-excel"></i> Tampilan Spreadsheet
+                        </button>
+                        <button onclick="switchRPDSubTab('table')" id="btnRpdTable" class="rpd-sub-btn">
+                            <i class="fas fa-chart-pie"></i> Kesimpulan
+                        </button>
+                    </div>
+                    
+                    <div style="flex: 1; position: relative; overflow: hidden;">
+                        <!-- View 1: Iframe -->
+                        <div id="rpdIframeView" style="width:100%; height:100%; display:block;">
+                            <iframe src="${cleanUrl}" style="width:100%; height:100%; border:none;"></iframe>
+                        </div>
+                        
+                        <!-- View 2: Table & Summary -->
+                        <div id="rpdTableView" style="width:100%; height:100%; display:none; background:#f8fafc; flex-direction:column; overflow: hidden;">
+                            <div style="padding: 20px; background: #fff; border-bottom: 1px solid #e2e8f0;">
+                                <div class="sidebar-search" style="margin:0; width: 100%; max-width: 600px;">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" placeholder="Filter kesimpulan (contoh: 'ATK', 'Januari')..." onkeyup="filterRPDTable(this.value)">
+                                </div>
+                            </div>
+                            <div id="rpdSummary" style="padding: 30px; display: block; overflow-y: auto; flex: 1;">
+                                <!-- Summary injected here -->
+                            </div>
+                            <div style="display:none; flex: 1; overflow: hidden; border-top: 1px solid #e2e8f0;" id="rpdTableContent">
+                                <div class="empty-state" style="height: 100%;"><i class="fas fa-spinner fa-spin"></i><p>Memuat data tabel...</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            setTimeout(() => { loader.style.width = '100%'; }, 300);
+            setTimeout(() => { loader.style.opacity = '0'; }, 800);
+
+            // Fetch Data CSV untuk Tabel Bawah
+            const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+            if (match) {
+                const sheetId = match[1];
+                const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
+                try {
+                    const response = await fetch(csvUrl);
+                    const csvText = await response.text();
+                    const rows = parseCSV(csvText);
+                    window.rpdRawRows = rows; // Simpan data mentah untuk fitur detail
+                    const headerCount = getHeaderRowCount(rows); // Deteksi jumlah baris header
+                    
+                    // Generate Summary
+                    updateRPDDashboard(rows, headerCount);
+
+                    // Render Tabel
+                    const tableContainer = document.getElementById('rpdTableContent');
+                    
+                    // Hitung max kolom agar tabel rapi dan tidak terpotong
+                    let maxCols = 0;
+                    for(let i=0; i<rows.length; i++) {
+                        if(rows[i].length > maxCols) maxCols = rows[i].length;
+                    }
+
+                    const headerRowsRaw = rows.slice(0, headerCount);
+                    const headerRowsNorm = headerRowsRaw.map(r => {
+                        const nr = [...r];
+                        while(nr.length < maxCols) nr.push('');
+                        return nr;
+                    });
+
+                    let html = '<div class="native-table-wrapper"><table class="native-table" id="rpdTable" style="width: max-content; min-width: 100%;">';
+                    html += '<thead>';
+                    html += generateTableHeaders(headerRowsNorm);
+                    html += '</thead><tbody>';
+                    
+                    for (let i = headerCount; i < rows.length; i++) {
+                        if (rows[i].length === 1 && rows[i][0] === '') continue;
+                        html += '<tr>';
+                        for(let j=0; j<maxCols; j++) {
+                            html += `<td>${rows[i][j] || ''}</td>`;
+                        }
+                        html += '</tr>';
+                    }
+                    html += '</tbody></table></div>';
+                    
+                    tableContainer.innerHTML = html;
+                    tableContainer.style.display = 'block';
+                } catch (e) {
+                    console.error(e);
+                    const tableContainer = document.getElementById('rpdTableContent');
+                    if(tableContainer) tableContainer.innerHTML = '<div style="padding:20px; text-align:center; color:#64748b;">Gagal memuat data tabel.</div>';
+                    document.getElementById('rpdSummary').style.display = 'none';
+                }
+            }
+        }
+
+        function filterRPDTable(query) {
+            const table = document.getElementById('rpdTable');
+            if (!table) return;
+            const trs = table.getElementsByTagName('tr');
+            const filter = query.toLowerCase();
+            
+            // Kumpulkan data yang terlihat untuk update ringkasan
+            const visibleRows = [];
+            
+            // Ambil Header (Multi-row support)
+            const thead = table.querySelector('thead');
+            const headerTrs = thead ? thead.querySelectorAll('tr') : [];
+            headerTrs.forEach(tr => {
+                const rowData = [];
+                tr.querySelectorAll('th').forEach(th => rowData.push(th.innerText));
+                visibleRows.push(rowData);
+            });
+            
+            // Ambil Body
+            const tbody = table.querySelector('tbody');
+            const bodyTrs = tbody ? tbody.querySelectorAll('tr') : [];
+
+            for (let i = 0; i < bodyTrs.length; i++) {
+                const tr = bodyTrs[i];
+                const text = tr.textContent.toLowerCase();
+                const isVisible = text.includes(filter);
+                tr.style.display = isVisible ? '' : 'none';
+                
+                if (isVisible) {
+                    const rowData = [];
+                    const tds = tr.getElementsByTagName('td');
+                    for(let td of tds) rowData.push(td.innerText);
+                    visibleRows.push(rowData);
+                }
+            }
+            
+            // Update Ringkasan secara dinamis
+            updateRPDDashboard(visibleRows, headerTrs.length);
+        }
+
+        let rpdChartInstances = {};
+
+        function updateRPDDashboard(rows, headerCount = 1) {
+            const container = document.getElementById('rpdSummary');
+            if (!container) return;
+
+            if (!rows || rows.length <= headerCount) {
+                container.innerHTML = '<div style="color:#64748b; font-size:1rem; width:100%; text-align:center; margin-top: 40px;">Tidak ada data untuk ditampilkan.</div>';
+                return;
+            }
+
+            const headers = rows[0];
+            const rowCount = rows.length - headerCount;
+
+            // 1. Identifikasi Kolom
+            let categoryIdx = -1;
+            let valueIdx = -1;
+            const numericIndices = [];
+            const excludeKeywords = ['no', 'nomor', 'urut', 'tahun', 'kode', 'id', 'nik', 'nip', 'bulan', 'semester', 'tanggal', 'update', 'aksi', 'ket', 'keterangan'];
+
+            // Cari kolom angka (Value) dan kolom teks (Kategori)
+            headers.forEach((header, idx) => {
+                const h = header.toLowerCase();
+                
+                // Cek apakah kolom ini angka (dengan toleransi)
+                let numericCount = 0;
+                let dataCount = 0;
+                
+                // Sample up to 50 rows
+                const sampleLimit = Math.min(rows.length, 50 + headerCount);
+                for (let i = headerCount; i < sampleLimit; i++) {
+                    if (rows[i] && rows[i][idx]) {
+                        let cell = rows[i][idx].trim();
+                        if (cell === '' || cell === '-') continue;
+                        
+                        dataCount++;
+                        // Bersihkan format uang: Hapus Rp, hapus titik (ribuan), ganti koma jadi titik (desimal)
+                        let clean = cell.replace(/Rp\.?\s?/gi, '').replace(/\./g, '').replace(',', '.');
+                        if (!isNaN(parseFloat(clean)) && isFinite(clean)) {
+                            numericCount++;
+                        }
+                    }
+                }
+
+                // Jika > 70% data non-kosong adalah angka, anggap kolom numerik
+                const isNumeric = dataCount > 0 && (numericCount / dataCount) > 0.7;
+
+                if (isNumeric && !excludeKeywords.some(k => h === k || h.startsWith(k + ' ') || h.endsWith(' ' + k))) {
+                    numericIndices.push(idx);
+                    if (valueIdx === -1) valueIdx = idx; // Default ke angka pertama
+                } else if (!isNumeric && categoryIdx === -1 && dataCount > 0 && !excludeKeywords.some(k => h.includes(k))) {
+                    categoryIdx = idx; // Ambil kolom teks pertama yang valid sebagai kategori
+                }
+            });
+
+            // Prioritaskan kolom Value yang mengandung kata 'Jumlah', 'Total', dll
+            const moneyKeywords = ['jumlah', 'total', 'pagu', 'nilai', 'biaya', 'anggaran', 'harga'];
+            const bestValueIdx = numericIndices.find(idx => moneyKeywords.some(k => headers[idx].toLowerCase().includes(k)));
+            if (bestValueIdx !== undefined) valueIdx = bestValueIdx;
+
+            // 2. Cari Baris "JUMLAH" / "TOTAL" (Summary Rows dari Spreadsheet)
+            const summaryRows = [];
+            const summaryKeywords = ['JUMLAH', 'TOTAL', 'REKAP', 'GRAND TOTAL'];
+
+            for (let i = headerCount; i < rows.length; i++) {
+                const row = rows[i];
+                if (!row || row.length === 0) continue;
+                
+                // Cek kolom awal untuk keyword
+                let foundLabel = null;
+                for(let c = 0; c < Math.min(row.length, 4); c++) {
+                    const cellText = (row[c] || '').toString().toUpperCase();
+                    if (summaryKeywords.some(k => cellText.includes(k))) {
+                        foundLabel = (row[c] || '').toString().trim();
+                        break;
+                    }
+                }
+
+                if (foundLabel) {
+                    // Ambil nilai dari valueIdx atau kolom angka pertama yang valid
+                    let val = 0;
+                    if (valueIdx !== -1 && row[valueIdx]) {
+                        let clean = row[valueIdx].replace(/Rp\.?\s?/gi, '').replace(/\./g, '').replace(',', '.').trim();
+                        val = parseFloat(clean) || 0;
+                    }
+                    if (val === 0) {
+                         for (let idx of numericIndices) {
+                            if (row[idx]) {
+                                let clean = row[idx].replace(/Rp\.?\s?/gi, '').replace(/\./g, '').replace(',', '.').trim();
+                                let v = parseFloat(clean);
+                                if (!isNaN(v) && v > 0) { val = v; break; }
+                            }
+                        }
+                    }
+                    if (val > 0) {
+                        summaryRows.push({ label: foundLabel, value: val });
+                    }
+                }
+            }
+
+            // 3. Logika Render
+            let html = '';
+            const fmt = (n) => 'Rp ' + n.toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+            // JIKA DITEMUKAN BARIS "JUMLAH/TOTAL" (Prioritas Utama)
+            if (summaryRows.length > 0) {
+                html += '<div class="rpd-dashboard-grid">';
+                summaryRows.forEach(item => {
+                    const safeLabel = item.label.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                    html += `
+                        <div class="rpd-card" onclick="openRPDDetail('${safeLabel}')" style="border-left: 5px solid #eab308; background: #fefce8; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;">
+                            <div class="rpd-card-title" style="color: #854d0e;">${item.label}</div>
+                            <div class="rpd-card-value" style="color: #ca8a04;">${fmt(item.value)}</div>
+                            <div class="rpd-card-sub" style="color: #a16207; font-size: 0.75rem; margin-top: 8px;"><i class="fas fa-search-plus"></i> Klik untuk rincian</div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+
+                // Chart untuk Summary Rows
+                html += `
+                    <div class="rpd-charts-container">
+                        <div class="rpd-chart-card">
+                            <div class="rpd-chart-header"><i class="fas fa-chart-pie" style="color:#eab308;"></i> Perbandingan Total</div>
+                            <div style="position: relative; height: 280px; width: 100%;">
+                                <canvas id="rpdSummaryChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Container untuk detail (hidden by default)
+                html += `<div id="rpdDetailSection" style="display:none; margin-top: 30px; animation: fadeIn 0.5s;"></div>`;
+                
+                container.innerHTML = html;
+                renderRPDSummaryChart(summaryRows);
+                return; // Selesai, tidak perlu hitung manual
+            }
+
+            // JIKA TIDAK ADA BARIS TOTAL, GUNAKAN HITUNGAN MANUAL (Fallback)
+            const globalTotals = {};
+            const globalMax = {};
+            numericIndices.forEach(idx => { globalTotals[idx] = 0; globalMax[idx] = 0; });
+
+            const categoryTotals = {}; // Map: CategoryName -> TotalValue (of valueIdx)
+
+            for (let i = headerCount; i < rows.length; i++) {
+                const row = rows[i];
+                if (!row) continue;
+                if (row.length === 1 && row[0] === '') continue;
+
+                // Deteksi dan lewati baris Total/Jumlah agar statistik akurat
+                const firstCol = row[0] ? row[0].toString().trim().toLowerCase() : '';
+                const secondCol = row[1] ? row[1].toString().trim().toLowerCase() : '';
+                if (/^(total|jumlah|rekap|grand total)/.test(firstCol) || /^(total|jumlah)/.test(secondCol)) {
+                    continue;
+                }
+                
+                // Global Stats
+                row.forEach((cell, idx) => {
+                    if (numericIndices.includes(idx) && cell) {
+                        let clean = cell.replace(/Rp\.?\s?/gi, '').replace(/\./g, '').replace(',', '.').trim();
+                        let val = parseFloat(clean);
+                        if (!isNaN(val)) {
+                            globalTotals[idx] += val;
+                            if (val > globalMax[idx]) globalMax[idx] = val;
+                        }
+                    }
+                });
+
+                // Category Grouping
+                if (categoryIdx !== -1 && valueIdx !== -1) {
+                    let catName = row[categoryIdx] ? row[categoryIdx].trim() : 'Lainnya';
+                    if (!catName || catName === '-') catName = 'Tanpa Kategori';
+                    
+                    if (row[valueIdx]) {
+                        let cleanVal = row[valueIdx].replace(/Rp\.?\s?/gi, '').replace(/\./g, '').replace(',', '.').trim();
+                        let val = parseFloat(cleanVal);
+                        if (!isNaN(val)) {
+                            categoryTotals[catName] = (categoryTotals[catName] || 0) + val;
+                        }
+                    }
+                }
+            }
+
+            // --- Bagian Atas: Kartu Total Global (Grid) ---
+            html += '<div class="rpd-dashboard-grid">';
+            
+            // Card Total Rows
+            html += `
+                <div class="rpd-card">
+                    <div class="rpd-card-title">TOTAL ITEM DATA</div>
+                    <div class="rpd-card-value" style="color: #1e293b;">${rowCount}</div>
+                    <div class="rpd-card-sub">Baris Data</div>
+                </div>
+            `;
+
+            // Card Sums per Numeric Column
+            numericIndices.forEach(idx => {
+                let label = headers[idx];
+                // Hindari duplikasi kata "Jumlah" atau "Total" pada label
+                if (label.toUpperCase().startsWith('JUMLAH')) label = label.substring(6).trim();
+                else if (label.toUpperCase().startsWith('TOTAL')) label = label.substring(5).trim();
+                
+                // Jika label kosong (misal header aslinya hanya "Jumlah"), beri default
+                if (!label) label = "NOMINAL";
+
+                const total = globalTotals[idx];
+                const max = globalMax[idx];
+                
+                html += `
+                    <div class="rpd-card">
+                        <div class="rpd-card-title">TOTAL ${label.toUpperCase()}</div>
+                        <div class="rpd-card-value" style="color: #ca8a04;">${fmt(total)}</div>
+                        <div class="rpd-card-sub">Tertinggi: ${fmt(max)}</div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+
+            // --- Bagian Tengah: Grafik (Charts) ---
+            if (categoryIdx !== -1 && valueIdx !== -1) {
+                html += `
+                    <div class="rpd-charts-container">
+                        <div class="rpd-chart-card">
+                            <div class="rpd-chart-header"><i class="fas fa-chart-bar" style="color:#eab308;"></i> Peringkat Teratas</div>
+                            <div style="position: relative; height: 280px; width: 100%;">
+                                <canvas id="rpdBarChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="rpd-chart-card">
+                            <div class="rpd-chart-header"><i class="fas fa-chart-pie" style="color:#eab308;"></i> Proporsi Kategori</div>
+                            <div style="position: relative; height: 280px; width: 100%;">
+                                <canvas id="rpdDoughnutChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // --- Bagian Bawah: Rincian per Kategori (Jika ada) ---
+            if (categoryIdx !== -1 && valueIdx !== -1) {
+                const sortedCats = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1]); // Sort by value desc
+                const catHeader = headers[categoryIdx];
+                const valHeader = headers[valueIdx];
+
+                html += `<h3 style="width: 100%; font-size: 1.1rem; color: #1e293b; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-list-ul" style="color: #eab308;"></i> Rincian Total ${valHeader} per ${catHeader}
+                         </h3>`;
+                
+                html += '<div style="width: 100%; background: white; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden;">';
+                
+                sortedCats.forEach(([cat, val], index) => {
+                    const bg = index % 2 === 0 ? '#fff' : '#f8fafc';
+                    html += `
+                        <div style="padding: 15px 20px; background: ${bg}; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9;">
+                            <div style="display:flex; align-items:center; gap:10px; overflow:hidden;">
+                                <span style="background:#fef9c3; color:#854d0e; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:6px; min-width:24px; text-align:center;">${index + 1}</span>
+                                <div style="font-weight: 600; color: #334155; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${cat}">${cat}</div>
+                            </div>
+                            <div style="font-weight: 700; color: #ca8a04; font-size: 0.95rem;">${fmt(val)}</div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+            }
+
+            container.innerHTML = html;
+
+            // --- Render Charts ---
+            if (categoryIdx !== -1 && valueIdx !== -1) {
+                renderRPDChartsData(categoryTotals, headers[valueIdx]);
+            }
+        }
+
+        function renderRPDSummaryChart(data) {
+            const ctx = document.getElementById('rpdSummaryChart');
+            if (!ctx) return;
+            
+            if (rpdChartInstances.summary) rpdChartInstances.summary.destroy();
+            
+            rpdChartInstances.summary = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: data.map(d => d.label),
+                    datasets: [{
+                        data: data.map(d => d.value),
+                        backgroundColor: ['#eab308', '#f59e0b', '#d97706', '#b45309', '#78350f', '#fbbf24', '#fcd34d'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff',
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: { padding: 10 },
+                    plugins: {
+                        legend: { 
+                            position: 'right', 
+                            labels: { boxWidth: 12, usePointStyle: true, padding: 15, font: { size: 11 } } 
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            titleColor: '#1e293b',
+                            bodyColor: '#1e293b',
+                            borderColor: '#e2e8f0',
+                            borderWidth: 1,
+                            padding: 10,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) label += ': ';
+                                    let value = context.raw;
+                                    let total = context.chart._metasets[context.datasetIndex].total;
+                                    let percentage = Math.round((value / total) * 100) + '%';
+                                    return label + new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(value) + ' (' + percentage + ')';
+                                }
+                            }
+                        }
+                    },
+                    cutout: '70%',
+                    animation: { animateScale: true, animateRotate: true }
+                }
+            });
+        }
+
+        function openRPDDetail(label) {
+            const rows = window.rpdRawRows;
+            if(!rows) return;
+            const headerCount = getHeaderRowCount(rows);
+
+            // Cari index baris summary yang diklik
+            let targetIndex = -1;
+            let prevSummaryIndex = 0;
+            const summaryKeywords = ['JUMLAH', 'TOTAL', 'REKAP', 'GRAND TOTAL'];
+
+            for(let i = headerCount; i < rows.length; i++) {
+                const row = rows[i];
+                // Cek apakah ini baris summary
+                let isSum = false;
+                let foundLabel = null;
+                for(let c = 0; c < Math.min(row.length, 4); c++) {
+                    const txt = (row[c]||'').toString().toUpperCase();
+                    if(summaryKeywords.some(k => txt.includes(k))) {
+                        isSum = true;
+                        foundLabel = (row[c]||'').toString().trim();
+                        break;
+                    }
+                }
+
+                if(isSum) {
+                    if(foundLabel === label) {
+                        targetIndex = i;
+                        break;
+                    }
+                    // Jika ketemu summary lain, update prevSummaryIndex
+                    prevSummaryIndex = i; // Update prev index jika bukan target
+                }
+            }
+
+            if(targetIndex === -1) return;
+
+            // Ambil baris data di atasnya (antara prevSummaryIndex dan targetIndex)
+            // Jika prevSummaryIndex masih 0 (belum ketemu summary sebelumnya), mulai dari headerCount
+            const startIndex = prevSummaryIndex === 0 ? headerCount : prevSummaryIndex + 1;
+            const detailRows = rows.slice(startIndex, targetIndex);
+            
+            // Ambil Header Rows
+            const headerRows = rows.slice(0, headerCount);
+            
+            // Hitung Max Cols untuk normalisasi
+            let maxCols = 0;
+            headerRows.forEach(r => { if(r.length > maxCols) maxCols = r.length; });
+            detailRows.forEach(r => { if(r.length > maxCols) maxCols = r.length; });
+
+            // Normalisasi Header Rows
+            const normalizedHeaders = headerRows.map(r => {
+                const nr = [...r];
+                while(nr.length < maxCols) nr.push('');
+                return nr;
+            });
+
+            renderDetailView(label, normalizedHeaders, detailRows);
+        }
+
+        function renderDetailView(title, headerRows, rows) {
+            const container = document.getElementById('rpdDetailSection');
+            if(!container) return;
+            
+            container.style.display = 'block';
+            setTimeout(() => container.scrollIntoView({ behavior: 'smooth' }), 100);
+
+            // Flatten headers untuk keperluan chart logic (menggabungkan teks header multi-row)
+            const flatHeaders = headerRows[0].map((h, i) => {
+                let text = h;
+                for(let r=1; r<headerRows.length; r++) {
+                    if(headerRows[r][i]) text += ' ' + headerRows[r][i];
+                }
+                return text;
+            });
+
+            // Persiapan Data Chart
+            // Cari kolom nilai (angka) dan nama item
+            let nameIdx = 1; 
+            let valIdx = -1;
+            
+            const moneyKeywords = ['jumlah', 'total', 'pagu', 'nilai', 'biaya', 'anggaran', 'harga'];
+            valIdx = flatHeaders.findIndex(h => moneyKeywords.some(k => h.toLowerCase().includes(k)));
+            
+            if(valIdx === -1 && rows.length > 0) {
+                // Fallback: cari kolom angka pertama
+                for(let c=0; c<flatHeaders.length; c++) {
+                     const cell = rows[0][c];
+                     if(cell && !isNaN(parseFloat(cell.replace(/[^0-9,-]+/g,"")))) {
+                         valIdx = c; break;
+                     }
+                }
+            }
+            if(valIdx === -1) valIdx = flatHeaders.length - 1;
+
+            const chartData = [];
+            
+            rows.forEach(row => {
+                if(!row || row.length <= valIdx) return;
+                let name = row[nameIdx] || row[0] || 'Item';
+                let valStr = row[valIdx];
+                if(valStr) {
+                    let val = parseFloat(valStr.replace(/Rp\.?\s?/gi, '').replace(/\./g, '').replace(',', '.'));
+                    if(!isNaN(val) && val > 0) {
+                        chartData.push({
+                            label: name.length > 20 ? name.substring(0,20)+'...' : name,
+                            value: val
+                        });
+                    }
+                }
+            });
+
+            // Sort Descending & Take Top 10 for Charts (Agar grafik tidak penuh sesak)
+            chartData.sort((a, b) => b.value - a.value);
+            const topChartData = chartData.slice(0, 10);
+            const labels = topChartData.map(d => d.label);
+            const values = topChartData.map(d => d.value);
+            
+            // Hitung maxCols untuk tabel detail
+            const maxCols = flatHeaders.length;
+
+            // HTML Template
+            let html = `
+                <div style="background: white; border-radius: 16px; border: 1px solid #eab308; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);">
+                    <div style="background: #fefce8; padding: 15px 25px; border-bottom: 1px solid #fde047; display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="color: #854d0e; font-size: 1.1rem; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-folder-open"></i> Rincian: <strong>${title}</strong>
+                        </h3>
+                        <button onclick="document.getElementById('rpdDetailSection').style.display='none'" style="background: transparent; border: none; color: #854d0e; cursor: pointer; font-size: 1.2rem;"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div style="padding: 25px;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                            <div style="height: 300px; position: relative; border: 1px solid #f1f5f9; border-radius: 12px; padding: 10px;">
+                                <canvas id="detailBarChart"></canvas>
+                            </div>
+                            <div style="height: 300px; position: relative; border: 1px solid #f1f5f9; border-radius: 12px; padding: 10px;">
+                                <canvas id="detailPieChart"></canvas>
+                            </div>
+                        </div>
+                        <div style="overflow-x: auto; max-height: 500px; overflow-y: auto; border-radius: 8px; border: 1px solid #e2e8f0;">
+                            <table class="native-table" style="width: max-content; min-width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                                <thead style="background: #fef9c3;">
+                                    ${generateTableHeaders(headerRows)}
+                                </thead>
+                                <tbody>
+                                    ${rows.filter(r => r.length > 1 || (r[0] && r[0].trim() !== '')).map(row => `<tr style="border-bottom: 1px solid #f1f5f9;">${Array.from({length: maxCols}).map((_, idx) => `<td style="padding: 10px 15px; color: #334155; white-space: nowrap;">${row[idx] !== undefined ? row[idx] : ''}</td>`).join('')}</tr>`).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = html;
+
+            // Render Charts
+            if(window.detailChart1) window.detailChart1.destroy();
+            if(window.detailChart2) window.detailChart2.destroy();
+
+            // Gradient untuk Bar Chart Detail
+            const ctx1 = document.getElementById('detailBarChart');
+            if(ctx1) {
+                const ctx = ctx1.getContext('2d');
+                const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+                gradient.addColorStop(0, '#facc15');
+                gradient.addColorStop(1, '#ca8a04');
+
+                window.detailChart1 = new Chart(ctx1, { 
+                    type: 'bar', 
+                    data: { 
+                        labels: labels, 
+                        datasets: [{ 
+                            label: 'Nominal', 
+                            data: values, 
+                            backgroundColor: gradient, 
+                            borderRadius: 6,
+                            barPercentage: 0.6
+                        }] 
+                    }, 
+                    options: { 
+                        responsive: true, 
+                        maintainAspectRatio: false, 
+                        plugins: { 
+                            legend: { display: false }, 
+                            tooltip: {
+                                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                titleColor: '#1e293b',
+                                bodyColor: '#1e293b',
+                                borderColor: '#e2e8f0',
+                                borderWidth: 1,
+                                callbacks: { label: (c) => ' ' + new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(c.raw) }
+                            }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, grid: { borderDash: [4, 4], color: '#f1f5f9' }, ticks: { font: { size: 10 } }, title: { display: true, text: 'Nominal (Rp)' } },
+                            x: { grid: { display: false }, ticks: { display: true, font: { size: 10 }, maxRotation: 45, minRotation: 0 } }
+                        }
+                    } 
+                });
+            }
+
+            const ctx2 = document.getElementById('detailPieChart');
+            if(ctx2) {
+                window.detailChart2 = new Chart(ctx2, { 
+                    type: 'doughnut', 
+                    data: { 
+                        labels: labels, 
+                        datasets: [{ 
+                            data: values, 
+                            backgroundColor: ['#eab308', '#f59e0b', '#d97706', '#b45309', '#78350f', '#fbbf24'], 
+                            borderWidth: 2,
+                            borderColor: '#ffffff',
+                            hoverOffset: 8
+                        }] 
+                    }, 
+                    options: { 
+                        responsive: true, 
+                        maintainAspectRatio: false, 
+                        layout: { padding: 10 },
+                        plugins: { 
+                            legend: { position: 'right', labels: { boxWidth: 12, usePointStyle: true, font: { size: 10 } } },
+                            tooltip: {
+                                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                bodyColor: '#1e293b',
+                                borderColor: '#e2e8f0',
+                                borderWidth: 1,
+                                callbacks: {
+                                    label: function(context) {
+                                        let value = context.raw;
+                                        let total = context.chart._metasets[context.datasetIndex].total;
+                                        let percentage = Math.round((value / total) * 100) + '%';
+                                        return ' ' + new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(value) + ' (' + percentage + ')';
+                                    }
+                                }
+                            }
+                        },
+                        cutout: '65%'
+                    } 
+                });
+            }
+        }
+
+        function renderRPDChartsData(categoryTotals, valueLabel) {
+            const sorted = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1]);
+            const top10 = sorted.slice(0, 10);
+            const top5 = sorted.slice(0, 5);
+            
+            // Prepare Data for Bar Chart (Top 10)
+            const barLabels = top10.map(i => i[0].length > 20 ? i[0].substring(0, 20) + '...' : i[0]);
+            const barData = top10.map(i => i[1]);
+
+            // Prepare Data for Doughnut (Top 5 + Others)
+            const doughnutLabels = top5.map(i => i[0]);
+            const doughnutData = top5.map(i => i[1]);
+            const otherTotal = sorted.slice(5).reduce((acc, curr) => acc + curr[1], 0);
+            if (otherTotal > 0) {
+                doughnutLabels.push('Lainnya');
+                doughnutData.push(otherTotal);
+            }
+
+            // Destroy old instances
+            if (rpdChartInstances.bar) rpdChartInstances.bar.destroy();
+            if (rpdChartInstances.doughnut) rpdChartInstances.doughnut.destroy();
+
+            // Render Bar Chart
+            const ctxBar = document.getElementById('rpdBarChart');
+            if (ctxBar) {
+                const ctx = ctxBar.getContext('2d');
+                const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+                gradient.addColorStop(0, '#facc15');
+                gradient.addColorStop(1, '#ca8a04');
+
+                rpdChartInstances.bar = new Chart(ctxBar, {
+                    type: 'bar',
+                    data: {
+                        labels: barLabels,
+                        datasets: [{
+                            label: valueLabel,
+                            data: barData,
+                            backgroundColor: gradient,
+                            borderRadius: 8,
+                            barPercentage: 0.6,
+                            categoryPercentage: 0.8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { 
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                titleColor: '#1e293b',
+                                bodyColor: '#1e293b',
+                                borderColor: '#e2e8f0',
+                                borderWidth: 1,
+                                callbacks: { label: (c) => ' ' + new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(c.raw) }
+                            }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, grid: { borderDash: [4, 4], color: '#f1f5f9' }, ticks: { font: { size: 10 }, color: '#64748b' }, title: { display: true, text: 'Nominal (Rp)' } },
+                            x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#64748b' } }
+                        }
+                    }
+                });
+            }
+
+            // Render Doughnut Chart
+            const ctxDoughnut = document.getElementById('rpdDoughnutChart');
+            if (ctxDoughnut) {
+                rpdChartInstances.doughnut = new Chart(ctxDoughnut, {
+                    type: 'doughnut',
+                    data: {
+                        labels: doughnutLabels,
+                        datasets: [{
+                            data: doughnutData,
+                            backgroundColor: ['#eab308', '#f59e0b', '#d97706', '#b45309', '#78350f', '#fbbf24', '#cbd5e1'],
+                            borderWidth: 2,
+                            borderColor: '#ffffff',
+                            hoverOffset: 10
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        layout: { padding: 10 },
+                        plugins: {
+                            legend: { position: 'right', labels: { boxWidth: 12, usePointStyle: true, padding: 15, font: { size: 11 } } },
+                            tooltip: {
+                                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                bodyColor: '#1e293b',
+                                borderColor: '#e2e8f0',
+                                borderWidth: 1,
+                                callbacks: {
+                                    label: function(context) {
+                                        let value = context.raw;
+                                        let total = context.chart._metasets[context.datasetIndex].total;
+                                        let percentage = Math.round((value / total) * 100) + '%';
+                                        return ' ' + new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(value) + ' (' + percentage + ')';
+                                    }
+                                }
+                            }
+                        },
+                        cutout: '70%',
+                        animation: { animateScale: true, animateRotate: true }
+                    }
+                });
+            }
+        }
+
+        function switchRPDSubTab(mode) {
+            const btnIframe = document.getElementById('btnRpdIframe');
+            const btnTable = document.getElementById('btnRpdTable');
+            const viewIframe = document.getElementById('rpdIframeView');
+            const viewTable = document.getElementById('rpdTableView');
+
+            if (mode === 'iframe') {
+                btnIframe.classList.add('active');
+                btnTable.classList.remove('active');
+                viewIframe.style.display = 'block';
+                viewTable.style.display = 'none';
+            } else {
+                btnIframe.classList.remove('active');
+                btnTable.classList.add('active');
+                viewIframe.style.display = 'none';
+                viewTable.style.display = 'flex';
+            }
+        }
+
+        // --- LOGIKA SMART TABLE (PBJ) ---
+
+        async function loadSmartData(url, section) {
+            const container = document.getElementById('iframeContainer');
+            const loader = document.getElementById('loadingLine');
+            
+            // Regex untuk ambil ID Spreadsheet
+            const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+            
+            // Jika bukan link Google Sheet valid, fallback ke Iframe biasa
+            if (!match) {
+                loadIframeView(url, section);
+                loadSidebarDataFromStorage(section); // Load sidebar manual
+                return;
+            }
+
+            const sheetId = match[1];
+            // URL untuk ambil data CSV (Google Visualization API)
+            const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
+
+            try {
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Mengambil data tabel...</p></div>`;
+                
+                const response = await fetch(csvUrl);
+                if (!response.ok) throw new Error("Gagal akses spreadsheet");
+                
+                const csvText = await response.text();
+                const rows = parseCSV(csvText);
+                window.smartTableData = rows; // Simpan ke global variable
+
+                renderNativeTable(rows);
+                populateSidebarFromTable(rows);
+                processAndRenderStats(rows);
+                renderSubsatkerTable(rows);
+
+                // Finish loading
+                setTimeout(() => { loader.style.width = '100%'; }, 300);
+                setTimeout(() => { loader.style.opacity = '0'; }, 800);
+
+            } catch (error) {
+                console.error("Error fetching sheet:", error);
+                // Jika gagal (misal sheet private), fallback ke Iframe
+                loadIframeView(url, section);
+                loadSidebarDataFromStorage(section);
+            }
+        }
+
+        function parseCSV(str) {
+            // Parser CSV sederhana
+            const arr = [];
+            let quote = false;
+            let col = 0, row = 0;
+
+            for (let c = 0; c < str.length; c++) {
+                let cc = str[c], nc = str[c+1];
+                arr[row] = arr[row] || [];
+                arr[row][col] = arr[row][col] || '';
+
+                if (cc == '"' && quote && nc == '"') { arr[row][col] += cc; ++c; }
+                else if (cc == '"') { quote = !quote; }
+                else if (cc == ',' && !quote) { ++col; }
+                else if ((cc == '\r' && nc == '\n' && !quote) || (cc == '\n' && !quote)) { ++row; col = 0; if (cc == '\r') ++c; }
+                else { arr[row][col] += cc; }
+            }
+            return arr;
+        }
+
+        function renderNativeTable(rows) {
+            const container = document.getElementById('iframeContainer');
+            if (rows.length === 0) return;
+
+            let html = '<div class="native-table-wrapper"><table class="native-table" id="pbjTable">';
+            
+            // Header (Baris pertama)
+            html += '<thead><tr>';
+            rows[0].forEach(cell => {
+                html += `<th>${cell}</th>`;
+            });
+            html += '</tr></thead>';
+
+            // Body (Baris selanjutnya)
+            html += '<tbody>';
+            for (let i = 1; i < rows.length; i++) {
+                // Skip baris kosong
+                if (rows[i].length === 1 && rows[i][0] === '') continue;
+                
+                html += '<tr>';
+                rows[i].forEach(cell => {
+                    html += `<td>${cell}</td>`;
+                });
+                html += '</tr>';
+            }
+            html += '</tbody></table></div>';
+
+            container.innerHTML = html;
+        }
+
+        function populateSidebarFromTable(rows) {
+            const list = document.getElementById('latestDataList');
+            list.innerHTML = '';
+            
+            // Ambil 7 baris pertama (setelah header)
+            // Asumsi kolom 1 = Tanggal, Kolom 2 = Judul (sesuaikan jika perlu)
+            // Jika tidak ada kolom tanggal/judul spesifik, ambil kolom 0 dan 1
+            
+            let count = 0;
+            for (let i = 1; i < rows.length && count < 7; i++) {
+                const row = rows[i];
+                if (row.length < 2) continue;
+                
+                // Coba deteksi kolom tanggal (biasanya kolom pertama atau kedua)
+                const dateVal = row[0] || '-';
+                const titleVal = row[1] || 'Data';
+
+                list.innerHTML += `
+                    <li class="data-item">
+                        <span class="data-date">${dateVal}</span>
+                        <div class="data-title">${titleVal}</div>
+                    </li>
+                `;
+                count++;
+            }
+        }
+
+        let pbjChartInstance = null;
+
+        function processAndRenderStats(rows) {
+            if (!rows || rows.length === 0) return;
+
+            const headers = rows[0];
+            const headerLower = headers.map(h => h.toLowerCase());
+
+            // Deteksi Kolom PIC / Pelaksana secara otomatis berdasarkan Header
+            let nameColIndex = -1;
+            const keywords = ['pic', 'pelaksana', 'penyedia', 'vendor', 'nama', 'pihak', 'rekanan', 'kegiatan'];
+            
+            for (let key of keywords) {
+                const idx = headerLower.findIndex(h => h.includes(key));
+                if (idx !== -1) { nameColIndex = idx; break; }
+            }
+            
+            // Fallback: Jika tidak ketemu, gunakan kolom ke-3 (index 2) atau terakhir
+            if (nameColIndex === -1) nameColIndex = rows[0].length > 2 ? 2 : 1;
+
+            const counts = {};
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                if (row.length <= nameColIndex) continue;
+                const name = row[nameColIndex] ? row[nameColIndex].trim() : 'Lainnya';
+                if (name === '' || name === '-') continue;
+                counts[name] = (counts[name] || 0) + 1;
+            }
+
+            const sortedStats = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+            renderChart('doughnut', sortedStats.map(s => s[0]), sortedStats.map(s => s[1]), 'Statistik Data');
+            renderGroupingList(sortedStats.map(s => s[0]), sortedStats.map(s => s[1]), false);
+        }
+
+        function renderChart(type, labels, data, labelTitle) {
+            const ctx = document.getElementById('pbjChart').getContext('2d');
+            if (pbjChartInstance) pbjChartInstance.destroy();
+
+            const colors = ['#00eaff', '#0096ff', '#d989ff', '#ff4df8', '#ffffff'];
+
+            pbjChartInstance = new Chart(ctx, {
+                type: type,
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: labelTitle,
+                        data: data,
+                        backgroundColor: colors,
+                        borderColor: 'rgba(255,255,255,0.1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { color: '#334155', boxWidth: 10, font: { size: 10 } } },
+                        title: { display: true, text: 'Statistik Data', color: '#1e293b' }
+                    }
+                }
+            });
+        }
+
+        function renderGroupingList(labels, data, isCurrency) {
+            const listContainer = document.getElementById('groupingList');
+            listContainer.innerHTML = '';
+            
+            labels.forEach((label, index) => {
+                let value = data[index];
+                if (isCurrency) {
+                    value = 'Rp ' + value.toLocaleString('id-ID');
+                }
+                listContainer.innerHTML += `
+                    <div class="grouping-item">
+                        <span class="grouping-name">${label}</span>
+                        <span class="grouping-count">${value}</span>
+                    </div>
+                `;
+            });
+        }
+
+        function loadSidebarDataFromStorage(section) {
+            // Fallback: Load manual data dari Admin jika fetch gagal
+            const list = document.getElementById('latestDataList');
+            list.innerHTML = '';
+            const rawData = localStorage.getItem(section + '_Sidebar_Data');
+            if (rawData) {
+                const lines = rawData.split('\n');
+                lines.forEach(line => {
+                    const parts = line.split('|');
+                    if (parts.length >= 2) {
+                        list.innerHTML += `<li class="data-item"><span class="data-date">${parts[0].trim()}</span><div class="data-title">${parts[1].trim()}</div></li>`;
+                    }
+                });
+            } else {
+                list.innerHTML = '<li class="data-item"><div class="data-title">Gagal memuat tabel otomatis.</div></li>';
+            }
+        }
+
+        function filterTable(query) {
+            const table = document.getElementById('pbjTable');
+            if (!table) return;
+            
+            const trs = table.getElementsByTagName('tr');
+            const filter = query.toLowerCase();
+            
+            // Kumpulkan data baris yang terlihat untuk update chart
+            let visibleRows = [];
+            
+            // Ambil Header
+            const headers = [];
+            const ths = trs[0].getElementsByTagName('th');
+            for (let th of ths) headers.push(th.innerText);
+            visibleRows.push(headers);
+
+            // Mulai dari 1 untuk skip header
+            for (let i = 1; i < trs.length; i++) {
+                const tr = trs[i];
+                const tds = tr.getElementsByTagName('td');
+                let rowText = "";
+                let rowData = [];
+                
+                for (let td of tds) {
+                    rowText += td.textContent + " ";
+                    rowData.push(td.textContent);
+                }
+
+                // Cek apakah baris mengandung text query
+                if (rowText.toLowerCase().includes(filter)) {
+                    tr.style.display = '';
+                    visibleRows.push(rowData);
+                } else {
+                    tr.style.display = 'none';
+                }
+            }
+            
+            // Update Chart dengan data yang terlihat
+            processAndRenderStats(visibleRows);
+            renderSubsatkerTable(visibleRows);
+        }
+
+        function updateChartByRow(no) {
+            // Jika input kosong, kembalikan ke mode statistik umum (berdasarkan filter tabel saat ini)
+            if (!no) {
+                const searchVal = document.querySelector('.sidebar-search input').value;
+                filterTable(searchVal);
+                return;
+            }
+
+            if (!window.smartTableData || window.smartTableData.length === 0) return;
+
+            // Cari baris berdasarkan Kolom No (Index 0)
+            // Asumsi baris pertama adalah header, jadi cari mulai index 1
+            const header = window.smartTableData[0];
+            const row = window.smartTableData.find((r, i) => i > 0 && r[0].trim() == no.trim());
+
+            if (row) {
+                renderRowChart(header, row);
+                renderRowDetails(header, row);
+            }
+        }
+
+        function renderRowChart(headers, row) {
+            const labels = [];
+            const data = [];
+            
+            // Loop kolom untuk mencari data angka (Keuangan)
+            row.forEach((cell, index) => {
+                if (index === 0) return; // Skip kolom No
+                
+                // Bersihkan format uang (Rp, titik ribuan, koma desimal)
+                // Contoh: "Rp 1.500.000,00" -> 1500000.00
+                let clean = cell.replace(/Rp\.?\s?/g, '').replace(/\./g, '').replace(',', '.');
+                let val = parseFloat(clean);
+                
+                // Cek apakah header mengandung kata kunci keuangan
+                const h = headers[index].toLowerCase();
+                const isMoneyCol = h.includes('pagu') || h.includes('hps') || h.includes('nilai') || h.includes('kontrak') || h.includes('biaya') || h.includes('anggaran');
+
+                if (!isNaN(val) && val > 0 && isMoneyCol) {
+                     labels.push(headers[index]);
+                     data.push(val);
+                }
+            });
+
+            const canvasId = 'pbjChart'; // Gunakan chart keuangan untuk detail baris
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            if (pbjChartInstance) pbjChartInstance.destroy();
+
+            // Render Bar Chart untuk Perbandingan Anggaran
+            pbjChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels.length ? labels : ['Data Tidak Tersedia'],
+                    datasets: [{
+                        label: 'Nominal (Rp)',
+                        data: data.length ? data : [0],
+                        backgroundColor: ['#00eaff', '#0096ff', '#d989ff'],
+                        borderColor: 'rgba(255, 255, 255, 0.2)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, ticks: { color: '#334155' }, grid: { color: 'rgba(0,0,0,0.1)' } },
+                        x: { ticks: { color: '#334155', font: { size: 10 } }, grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: 'Detail Data No. ' + row[0], color: '#1e293b' }
+                    }
+                }
+            });
+        }
+
+        function renderRowDetails(headers, row) {
+            const listContainer = document.getElementById('groupingList');
+            const subsatkerContainer = document.getElementById('subsatkerContainer');
+            
+            // Clear previous content
+            listContainer.innerHTML = '<h3 style="margin-bottom:10px; margin-top:20px; font-size: 1rem;"><i class="fas fa-list"></i> Detail Lengkap</h3>';
+            if(subsatkerContainer) subsatkerContainer.innerHTML = ''; 
+
+            headers.forEach((header, index) => {
+                let value = row[index] || '-';
+                listContainer.innerHTML += `
+                    <div class="grouping-item" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+                        <span class="grouping-name" style="font-size:0.75rem;">${header}</span>
+                        <span class="grouping-count" style="background: transparent; padding: 0; font-size: 0.9rem; font-weight: 500; white-space: normal; color: inherit;">${value}</span>
+                    </div>
+                `;
+            });
+        }
+
+        function renderSubsatkerTable(rows) {
+            const container = document.getElementById('subsatkerContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (!rows || rows.length === 0) return;
+
+            const headers = rows[0].map(h => h.toLowerCase());
+            // Cari kolom SUBSATKER
+            let colIndex = headers.findIndex(h => h.includes('subsatker') || h.includes('sub satker') || h.includes('satker'));
+
+            if (colIndex === -1) return; // Tidak ada kolom subsatker
+
+            const counts = {};
+            // Skip header
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                if (row.length <= colIndex) continue;
+                
+                let val = row[colIndex] ? row[colIndex].trim().toUpperCase() : '-';
+                if (val === '' || val === '-') continue;
+                
+                counts[val] = (counts[val] || 0) + 1;
+            }
+
+            const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+
+            let html = '<hr style="border: 0; border-top: 1px solid rgba(226, 232, 240, 0.8); margin: 20px 0;">';
+            html += '<h3 style="margin-bottom:15px;"><i class="fas fa-building"></i> Rekap Subsatker</h3>';
+            
+            // Tombol Reset Filter
+            html += `<div class="grouping-item" onclick="resetSubsatkerFilter()" style="cursor: pointer; background: rgba(255, 255, 255, 0.5); margin-bottom: 10px; justify-content: center; border-radius: 8px;">
+                        <span class="grouping-name" style="color: #0ea5e9; font-weight: 600;"><i class="fas fa-sync-alt"></i> Tampilkan Semua Data</span>
+                     </div>`;
+
+            html += '<div style="max-height: 300px; overflow-y: auto;">';
+            
+            sorted.forEach(([name, count]) => {
+                const safeName = name.replace(/'/g, "\\'");
+                html += `
+                    <div class="grouping-item" onclick="filterBySubsatker('${safeName}')" style="cursor: pointer;">
+                        <span class="grouping-name" style="font-size:0.85rem;">${name}</span>
+                        <span class="grouping-count">${count}</span>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function filterBySubsatker(name) {
+            const searchInput = document.querySelector('.sidebar-search input[placeholder="Cari di tabel..."]');
+            if (searchInput) {
+                searchInput.value = name;
+                filterTable(name);
+            }
+        }
+
+        function resetSubsatkerFilter() {
+            const searchInput = document.querySelector('.sidebar-search input[placeholder="Cari di tabel..."]');
+            if (searchInput) {
+                searchInput.value = '';
+                filterTable('');
+            }
+        }
+
+        function getHeaderRowCount(rows) {
+            if (!rows || rows.length < 1) return 0;
+            
+            // 1. Cari baris dengan pola (1), (2) -> Indikator kuat baris terakhir header
+            for (let i = 0; i < Math.min(rows.length, 10); i++) {
+                const rowStr = rows[i].join(' ');
+                if (/\(\s*1\s*\)/.test(rowStr) && /\(\s*2\s*\)/.test(rowStr)) return i + 1;
+            }
+            
+            // 2. Cari baris dengan pola RPD/REALISASI -> Indikator header
+            for (let i = 0; i < Math.min(rows.length, 10); i++) {
+                const rowStr = rows[i].join(' ').toUpperCase();
+                if ((rowStr.includes('RPD') && rowStr.includes('REALISASI')) || rowStr.includes('SISA')) return i + 1;
+            }
+            
+            return 1;
+        }
+
+        function generateTableHeaders(headerRows) {
+            if (!headerRows || headerRows.length === 0) return '';
+            
+            const rowCount = headerRows.length;
+            const colCount = headerRows[0].length;
+            const processed = Array(rowCount).fill().map(() => Array(colCount).fill(false));
+            let html = '';
+
+            for (let r = 0; r < rowCount; r++) {
+                html += '<tr>';
+                for (let c = 0; c < colCount; c++) {
+                    if (processed[r][c]) continue;
+
+                    const cellText = headerRows[r][c] || '';
+                    let colspan = 1;
+                    let rowspan = 1;
+
+                    if (cellText !== '') {
+                        // Check right for colspan
+                        for (let k = c + 1; k < colCount; k++) {
+                            const nextCell = headerRows[r][k] || '';
+                            // Merge if empty OR same text (fix for repeated headers in CSV)
+                            if ((nextCell === '' || nextCell === cellText) && !processed[r][k]) {
+                                colspan++;
+                            } else {
+                                break;
+                            }
+                        }
+                        
+                        // Check down for rowspan
+                        let canRowspan = true;
+                        for (let k = r + 1; k < rowCount; k++) {
+                            for (let l = c; l < c + colspan; l++) {
+                                const belowCell = headerRows[k][l] || '';
+                                // Merge if empty OR same text
+                                if (belowCell !== '' && belowCell !== cellText) { canRowspan = false; break; }
+                            }
+                            if (canRowspan) rowspan++;
+                            else break;
+                        }
+                    }
+
+                    // Mark processed
+                    for (let i = r; i < r + rowspan; i++) {
+                        for (let j = c; j < c + colspan; j++) {
+                            processed[i][j] = true;
+                        }
+                    }
+
+                    // Tambahkan ikon sort/logo kecil agar terlihat seperti aplikasi spreadsheet asli
+                    let iconHtml = '';
+                    if (r + rowspan === rowCount && cellText.trim() !== '') {
+                        iconHtml = ' <i class="fas fa-sort" style="font-size: 0.7em; opacity: 0.5; margin-left: 5px; cursor: pointer;"></i>';
+                    }
+
+                    html += `<th colspan="${colspan}" rowspan="${rowspan}" style="padding: 12px 15px; text-align: center; background: #fef9c3; color: #854d0e; font-weight: 600; border: 1px solid #ca8a04; white-space: normal; vertical-align: middle;">${cellText}${iconHtml}</th>`;
+                }
+                html += '</tr>';
+            }
+            return html;
+        }
+    </script>
+</body>
+</html>
